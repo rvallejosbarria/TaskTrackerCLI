@@ -71,6 +71,9 @@ def main():
                                                     help='Change the status of a task to \'Done\'')
     mark_done_parser.add_argument('task_id', type=int, help='ID of the task')
 
+    list_parser = subparsers.add_parser('list', help='List all tasks')
+    list_parser.add_argument('--status', type=str, help='List tasks by status')
+
     args = parser.parse_args()
 
     if args.command == 'add':
@@ -130,6 +133,14 @@ def main():
             print("Task updated successfully")
         else:
             print(f"No task found with ID {args.task_id}")
+    elif args.command == 'list':
+        if args.status:
+            for task in tasks:
+                if task.status == args.status:
+                    print(f"{task.description}")
+        else:
+            for task in tasks:
+                print(f"{task.description}")
     else:
         parser.print_help()
 
