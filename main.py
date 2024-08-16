@@ -3,6 +3,7 @@ import json
 import argparse
 
 from task import Task
+from typing import Optional
 
 def load_tasks(filename: str):
     try:
@@ -37,6 +38,12 @@ def save_tasks(filename: str, tasks: list) -> None:
     except TypeError as e:
         print("Failed to serialize object to JSON: {e}")
 
+def find_task_by_id(tasks: list, task_id: int) -> Optional[Task]:
+    for task in tasks:
+        if task.id == task_id:
+            return task
+    return None
+
 def main():
     filename = 'tasks.json'
 
@@ -48,6 +55,10 @@ def main():
 
     add_parser = subparsers.add_parser('add', help='Add a new task')
     add_parser.add_argument('task_description', type=str, help='Description of the task')
+
+    update_parser = subparsers.add_parser('update', help='Update a new task')
+    update_parser.add_argument('task_id', type=int, help='ID of the task')
+    update_parser.add_argument('new_task_description', type=str, help='New description of the task')
 
     args = parser.parse_args()
 
@@ -61,6 +72,18 @@ def main():
         save_tasks(filename, tasks)
 
         print(f"Task added successfully {task}")
+    elif args.command == 'update':
+        found_task = find_task_by_id(tasks, args.task_id)
+
+        if found_task:
+            found_task.description = args.new_task_description
+            found_task.updated_at = datetime.datetime.now().isoformat()
+
+            save_tasks(filename, tasks)
+
+            print("Task updated successfully")
+        else:
+            print(f"No task found with ID {args.task_id}")
     else:
         parser.print_help()
 
