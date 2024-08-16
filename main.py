@@ -56,9 +56,12 @@ def main():
     add_parser = subparsers.add_parser('add', help='Add a new task')
     add_parser.add_argument('task_description', type=str, help='Description of the task')
 
-    update_parser = subparsers.add_parser('update', help='Update a new task')
+    update_parser = subparsers.add_parser('update', help='Update a task')
     update_parser.add_argument('task_id', type=int, help='ID of the task')
     update_parser.add_argument('new_task_description', type=str, help='New description of the task')
+
+    delete_parser = subparsers.add_parser('delete', help='Delete a task')
+    delete_parser.add_argument('task_id', type=int, help='ID of the task')
 
     args = parser.parse_args()
 
@@ -82,6 +85,17 @@ def main():
             save_tasks(filename, tasks)
 
             print("Task updated successfully")
+        else:
+            print(f"No task found with ID {args.task_id}")
+    elif args.command == 'delete':
+        found_task = find_task_by_id(tasks, args.task_id)
+
+        if found_task:
+            tasks.remove(found_task)
+
+            save_tasks(filename, tasks)
+
+            print("Task deleted successfully")
         else:
             print(f"No task found with ID {args.task_id}")
     else:
