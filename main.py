@@ -63,6 +63,14 @@ def main():
     delete_parser = subparsers.add_parser('delete', help='Delete a task')
     delete_parser.add_argument('task_id', type=int, help='ID of the task')
 
+    mark_in_progress_parser = subparsers.add_parser('mark-in-progress',
+                                                    help='Change the status of a task to \'In progress\'')
+    mark_in_progress_parser.add_argument('task_id', type=int, help='ID of the task')
+
+    mark_done_parser = subparsers.add_parser('mark-done',
+                                                    help='Change the status of a task to \'Done\'')
+    mark_done_parser.add_argument('task_id', type=int, help='ID of the task')
+
     args = parser.parse_args()
 
     if args.command == 'add':
@@ -96,6 +104,30 @@ def main():
             save_tasks(filename, tasks)
 
             print("Task deleted successfully")
+        else:
+            print(f"No task found with ID {args.task_id}")
+    elif args.command == 'mark-in-progress':
+        found_task = find_task_by_id(tasks, args.task_id)
+
+        if found_task:
+            found_task.status = 'in-progress'
+            found_task.updated_at = datetime.datetime.now().isoformat()
+
+            save_tasks(filename, tasks)
+
+            print("Task updated successfully")
+        else:
+            print(f"No task found with ID {args.task_id}")
+    elif args.command == 'mark-done':
+        found_task = find_task_by_id(tasks, args.task_id)
+
+        if found_task:
+            found_task.status = 'done'
+            found_task.updated_at = datetime.datetime.now().isoformat()
+
+            save_tasks(filename, tasks)
+
+            print("Task updated successfully")
         else:
             print(f"No task found with ID {args.task_id}")
     else:
