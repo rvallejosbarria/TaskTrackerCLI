@@ -5,3 +5,6 @@ class Task:
         self.status = status
         self.created_at = created_at
         self.updated_at = updated_at
+
+    def __str__(self):
+        return f"\"{self.description}\" (ID: {self.id}) created at: {self.created_at}"
