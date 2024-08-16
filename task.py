@@ -9,6 +9,15 @@ class Task:
     def __str__(self):
         return f"\"{self.description}\" (ID: {self.id}) created at: {self.created_at}"
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "description": self.description,
+            "status": self.status,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
     @staticmethod
     def from_dict(data):
         return Task(data["id"], data["description"], data["status"], data["created_at"], data["updated_at"])

@@ -1,3 +1,4 @@
+import datetime
 import json
 import argparse
 
@@ -20,6 +21,21 @@ def load_tasks(filename: str):
     except json.JSONDecodeError:
         print(f"{filename} is empty or contains invalid JSON. Starting with an empty list.")
         return []
+
+def get_next_id(tasks: list) -> int:
+    if tasks:
+        return max(task.id for task in tasks) + 1
+    else:
+        return 1
+
+def save_tasks(filename: str, tasks: list) -> None:
+    try:
+        with open(filename, "w") as file:
+            json.dump([task.to_dict() for task in tasks], file, indent=4)
+    except IOError:
+        print(f"An I/O error occurred while trying to write to the file {filename}.")
+    except TypeError as e:
+        print("Failed to serialize object to JSON: {e}")
 
 def main():
     filename = 'tasks.json'
