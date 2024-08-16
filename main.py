@@ -1,4 +1,5 @@
 import json
+import argparse
 
 from task import Task
 
@@ -22,7 +23,30 @@ def load_tasks(filename: str):
 
 def main():
     filename = 'tasks.json'
+
     tasks = load_tasks(filename)
+
+    parser = argparse.ArgumentParser(description="CLI app to track your tasks and manage your to-do list.")
+
+    subparsers = parser.add_subparsers(dest='command', help='Subcommand to run')
+
+    add_parser = subparsers.add_parser('add', help='Add a new task')
+    add_parser.add_argument('task_description', type=str, help='Description of the task')
+
+    args = parser.parse_args()
+
+    if args.command == 'add':
+        new_id = get_next_id(tasks)
+
+        task = Task(new_id, args.task_description, "todo", datetime.datetime.now().isoformat(), datetime.datetime.now().isoformat())
+
+        tasks.append(task)
+
+        save_tasks(filename, tasks)
+
+        print(f"Task added successfully {task}")
+    else:
+        parser.print_help()
 
 if __name__ == "__main__":
     main()
