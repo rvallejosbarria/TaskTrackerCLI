@@ -145,12 +145,8 @@ def main():
             print(f"No task found with ID {args.task_id}")
     elif args.command == 'list':
         # List tasks based on status or all tasks if no status is specified
-        if args.status:
-            for task in tasks:
-                if task.status == args.status:
-                    print(f"{task.description}")
-        else:
-            for task in tasks:
+        for task in tasks:
+            if not args.status or task.status == args.status:
                 print(f"{task.description}")
     else:
         parser.print_help() # Print help message if no valid subcommand is provided
