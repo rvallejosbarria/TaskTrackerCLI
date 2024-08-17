@@ -57,6 +57,8 @@ def main():
     # Subcommand for adding a new task
     add_parser = subparsers.add_parser('add', help='Add a new task')
     add_parser.add_argument('task_description', type=str, help='Description of the task')
+    add_parser.add_argument('--priority', type=str, choices=['Low', 'Medium', 'High'], default='Low',
+                            help='Priority of the task')
 
     # Subcommand for updating an existing task
     update_parser = subparsers.add_parser('update', help='Update a task')
@@ -87,7 +89,8 @@ def main():
         new_id = get_next_id(tasks) # Generate a new task ID
 
         # Create a new task and append it to the list
-        task = Task(new_id, args.task_description, "todo", datetime.datetime.now().isoformat(), datetime.datetime.now().isoformat())
+        task = Task(new_id, args.task_description, "todo", args.priority, datetime.datetime.now().isoformat(),
+                    datetime.datetime.now().isoformat())
         tasks.append(task)
 
         save_tasks(filename, tasks) # Save tasks to the file
@@ -144,6 +147,15 @@ def main():
         else:
             print(f"No task found with ID {args.task_id}")
     elif args.command == 'list':
+        priority_order = {
+            "Low": 1,
+            "Medium": 2,
+            "High": 3
+        }
+
+        # Sort tasks by priority in ascending order
+        tasks.sort(key=lambda  task: priority_order[task.priority], reverse=True)
+
         # List tasks based on status or all tasks if no status is specified
         for task in tasks:
             if not args.status or task.status == args.status:
