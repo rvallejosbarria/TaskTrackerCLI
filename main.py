@@ -1,3 +1,4 @@
+import sys
 import datetime
 import json
 import argparse
@@ -43,6 +44,15 @@ def find_task_by_id(tasks: list, task_id: int) -> Optional[Task]:
         if task.id == task_id:
             return task
     return None
+
+def print_colored(text, color, end='\n'):
+    colors = {
+        'High': '\x1b[31m', # Red
+        'Medium': '\x1b[33m', # Yellow
+        'Low': '\x1b[32m',  # Green
+    }
+    reset = '\x1b[0m'
+    sys.stdout.write(colors.get(color, '') + text + reset + end)
 
 def main():
     filename = 'tasks.json'  # File where tasks are stored
@@ -159,7 +169,7 @@ def main():
         # List tasks based on status or all tasks if no status is specified
         for task in tasks:
             if not args.status or task.status == args.status:
-                print(f"{task.description}")
+                print_colored(task.description, color=task.priority)
     else:
         parser.print_help() # Print help message if no valid subcommand is provided
 
