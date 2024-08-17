@@ -67,8 +67,10 @@ def main():
     # Subcommand for adding a new task
     add_parser = subparsers.add_parser('add', help='Add a new task')
     add_parser.add_argument('task_description', type=str, help='Description of the task')
+
     add_parser.add_argument('--priority', type=str, choices=['Low', 'Medium', 'High'], default='Low',
                             help='Priority of the task')
+    add_parser.add_argument('--due-date', type=str, help='Due date of the task')
 
     # Subcommand for updating an existing task
     update_parser = subparsers.add_parser('update', help='Update a task')
@@ -92,6 +94,7 @@ def main():
     # Subcommand for listing tasks
     list_parser = subparsers.add_parser('list', help='List all tasks')
     list_parser.add_argument('--status', type=str, help='List tasks by status')
+    list_parser.add_argument('--due-date', type=str, help='List tasks by due date')
 
     args = parser.parse_args()  # Parse the command-line arguments
 
@@ -99,7 +102,7 @@ def main():
         new_id = get_next_id(tasks) # Generate a new task ID
 
         # Create a new task and append it to the list
-        task = Task(new_id, args.task_description, "todo", args.priority, datetime.datetime.now().isoformat(),
+        task = Task(new_id, args.task_description, "todo", args.priority, args.due_date, datetime.datetime.now().isoformat(),
                     datetime.datetime.now().isoformat())
         tasks.append(task)
 
@@ -168,7 +171,7 @@ def main():
 
         # List tasks based on status or all tasks if no status is specified
         for task in tasks:
-            if not args.status or task.status == args.status:
+            if (not args.status or task.status == args.status) and (not args.due_date or task.due_date == args.due_date):
                 print_colored(task.description, color=task.priority)
     else:
         parser.print_help() # Print help message if no valid subcommand is provided
